@@ -1,0 +1,33 @@
+%{
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	int count_d=0,count_k=0,count_i=0;
+%}
+
+op [+-*/]
+letter [a-zA-Z]
+digit [0-9]
+id {letter}*|({letter}{digit})+
+notid ({digit}{letter})+
+
+%%
+[\t\n]+
+("int")|("float")|("if")|("printf")|("scanf")|("char")|("for")|("main()")|("return")	{printf("%s is a keyword\n",yytext); count_k++;}
+
+{id}	{printf("%s is an identifier\n",yytext); count_i++;}
+
+{digit}	{printf("%s is an operator\n",yytext); count_d++;}
+
+%%
+
+int main(){
+	FILE *fp;
+	fp=fopen("lexp","r");
+	yyin=fp;
+	yylex();
+	printf("total no. of keywords are: %d",count_k);
+	printf("total no. of identifiers are: %d",count_i);
+	printf("total no. of digits are: %d",count_d);
+	return 0;
+}
